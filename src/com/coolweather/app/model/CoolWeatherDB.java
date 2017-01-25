@@ -14,13 +14,13 @@ import com.coolweather.app.db.CoolWeatherOpenHelper;
 public class CoolWeatherDB {
 
 	public static final String DB_NAME="cool_weather";
-	public static final int version=1;
+	public static final int VERSION=1;
 	private static CoolWeatherDB coolWeatherDB;
 	private SQLiteDatabase db;
 	
 	private CoolWeatherDB(Context context) {
 		super();
-		CoolWeatherOpenHelper dbHelper=new CoolWeatherOpenHelper(context, DB_NAME, null, version);
+		CoolWeatherOpenHelper dbHelper=new CoolWeatherOpenHelper(context, DB_NAME, null, VERSION);
 		db=dbHelper.getWritableDatabase();
 	}
 	
@@ -32,10 +32,12 @@ public class CoolWeatherDB {
 	}
 	
 	public void saveProvince(Province province){
-		ContentValues values=new ContentValues();
-		values.put("province_name", province.getProvinceName());
-		values.put("province_code", province.getProvinceCode());
-		db.insert("province", null, values);
+		if (province!=null) {
+			ContentValues values=new ContentValues();
+			values.put("province_name", province.getProvinceName());
+			values.put("province_code", province.getProvinceCode());
+			db.insert("province", null, values);
+		}
 	}
 	
 	public List<Province> queryProvince(){
@@ -54,16 +56,18 @@ public class CoolWeatherDB {
 	}
 	
 	public void saveCity(City city){
-		ContentValues values=new ContentValues();
-		values.put("city_name" , city.getCityName());
-		values.put("city_code", city.getCityCode());
-		values.put("province_id", city.getProvinceId());
-		db.insert("city", null, values);
+		if (city!=null) {
+			ContentValues values=new ContentValues();
+			values.put("city_name" , city.getCityName());
+			values.put("city_code", city.getCityCode());
+			values.put("province_id", city.getProvinceId());
+			db.insert("city", null, values);
+		}
 	}
 	
 	public List<City> queryCity(int provinceId){
 		List<City> list=new ArrayList<City>();
-		Cursor cursor=db.query("city", null, null, null, null, null, null);
+		Cursor cursor=db.query("city", null, "province_id=?", new String[]{String.valueOf(provinceId)}, null, null, null);
 		if (cursor.moveToFirst()) {
 			do {
 				City city=new City();
@@ -78,16 +82,18 @@ public class CoolWeatherDB {
 	}
 	
 	public void saveCountry(Country country){
-		ContentValues values=new ContentValues();
-		values.put("country_name", country.getCountryName());
-		values.put("country_code", country.getCountryCode());
-		values.put("city_id", country.getCityId());
-		db.insert("country", null, values);
+		if (country!=null) {
+			ContentValues values=new ContentValues();
+			values.put("country_name", country.getCountryName());
+			values.put("country_code", country.getCountryCode());
+			values.put("city_id", country.getCityId());
+			db.insert("country", null, values);
+		}
 	}
 	
 	public List<Country> queryCountry(int cityId){
 		List<Country> list=new ArrayList<Country>();
-		Cursor cursor=db.query("country", null, null, null, null, null, null);
+		Cursor cursor=db.query("country", null, "city_id=?", new String[]{String.valueOf(cityId)}, null, null, null);
 		if (cursor.moveToFirst()) {
 			do {
 				Country country=new Country();

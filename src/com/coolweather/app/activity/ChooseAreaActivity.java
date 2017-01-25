@@ -47,12 +47,16 @@ public class ChooseAreaActivity extends Activity {
 	private Province selectedProvince;
 	private City selectedCity;
 	private int currentLevel;
+	private boolean isFromWeatherActivity;//是否从WeatherActivity中跳转过来
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		isFromWeatherActivity=getIntent().getBooleanExtra("from_weather_activity", false);
 		SharedPreferences prefs=PreferenceManager.getDefaultSharedPreferences(ChooseAreaActivity.this);
-		if (prefs.getBoolean("city_selected", false)) {
+		
+		if (prefs.getBoolean("city_selected", false)&&!isFromWeatherActivity) {
 			Intent intent=new Intent(ChooseAreaActivity.this,WeatherActivity.class);
 			startActivity(intent);
 			finish();
@@ -62,7 +66,7 @@ public class ChooseAreaActivity extends Activity {
 		setContentView(R.layout.choose_area);
 		listView=(ListView) findViewById(R.id.list_view);
 		titleText=(TextView) findViewById(R.id.title_text);
-		adapter=new ArrayAdapter<String>(ChooseAreaActivity.this,android.R.layout.simple_list_item_1,dataList);
+		adapter=new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,dataList);
 		listView.setAdapter(adapter);
 		coolWeatherDB=CoolWeatherDB.getInstance(this);
 		listView.setOnItemClickListener(new OnItemClickListener() {
@@ -223,6 +227,10 @@ public class ChooseAreaActivity extends Activity {
 		}else if (currentLevel==LEVEL_CITY) {
 			queryProvinces();
 		}else {
+			if (isFromWeatherActivity) {
+				Intent intent=new Intent(ChooseAreaActivity.this,WeatherActivity.class);
+				startActivity(intent);
+			}
 			finish();
 		}
 	}

@@ -7,8 +7,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class CoolWeatherOpenHelper extends SQLiteOpenHelper {
 	
-	private Context mContext;
-	
 	public static final String CREATE_PROVINCE="create table province(" 
 			+"id integer primary key autoincrement,"
 			+"province_name text,"
@@ -31,7 +29,6 @@ public class CoolWeatherOpenHelper extends SQLiteOpenHelper {
 			CursorFactory factory, int version) {
 		super(context, name, factory, version);
 		// TODO Auto-generated constructor stub
-		mContext=context;
 	}
 
 	@Override
